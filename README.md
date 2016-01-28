@@ -97,3 +97,43 @@ tx[is.na(color), color := 'x'] # give back NA
 
 
 
+---------MODELS-----------------------------------------
+
+df <- read.csv('http://bit.ly/BudapestBI-R-csv')
+
+str(df)
+
+?t.test #2 samlples compare the mean
+t.test(heightIn ~ sex, data = df)
+
+table(df$sex)
+
+aov(heightIn ~ sex, data = df) # variance within and between groups, how similar the 2 group 
+#aov - useful multiple variable
+summary(aov(heightIn ~ sex, data = df))
+
+boxplot(table(sex))
+library(ggplot2)
+ggplot(df, aes(x = sex, y=heightIn)) + geom_boxplot()
+ggplot(df, aes(x = sex, y=heightIn)) + geom_violin()
+
+str(df)
+setDT(df) # data.table
+setDT(ft) # data.table
+
+
+df[, high := as.character(heightIn > mean(heightIn))] 
+
+df[, .N, by = .(sex, high)]
+dcast(df, sex ~ high) # pivot table
+ft <- dcast(df, sex ~ high) # pivot table
+ft
+?chisq.test()
+chisq.test(ft)
+str(ft)
+ft[,-1] #-1 w/o first column
+ft$sex <- NULL
+chisq.test(ft)  #p val > 0.05 if higher may be different
+
+
+
