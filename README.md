@@ -137,3 +137,36 @@ chisq.test(ft)  #p val > 0.05 if higher may be different
 
 
 
+-------------- one problem  ------------------
+
+install.packages("openxlsx")
+library(openxlsx)
+
+setwd() #workdir
+tab <- read.xlsx('C:/Users/Administrator/Documents/ceu/bickel.xlsx')
+
+setDT(tab)
+str(tab)
+# is there real gender bias?
+
+tab[, rej := applicants - admissions]
+tab[, sum(rej)/sum(applicants), by = gender]
+tab[, sum(rej)/sum(applicants), by = .(gender,deparment)]
+# f rej ratio higher
+
+tab[,sum(applicants), by = .(deparment,gender)]
+tab[, rat := rej := applicants - admissions]
+
+table(tab$deparment,tab$gender, )
+tab
+
+
+f <- dcast(tab, deparment ~ gender, value.var = 'applicants')
+
+f$s <- f$f+f$m
+f$ff <- f$f/f$s
+f$fm <- f$m/f$s
+f$frm <- f$f/f$m
+str(f)
+f
+#simson paradox on google
